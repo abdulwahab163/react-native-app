@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Alert } from "react-native";
 
 import AppButton from "../components/AppButton";
 import AppTextInput from "../components/AppTextInput";
 import Screen from "../components/Screen";
+import AuthContext from "../helpers/AuthContext";
 
 function Login({ navigation }) {
   const [username, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { setAuthInfo } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -19,11 +22,15 @@ function Login({ navigation }) {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (data) {
+      if (data && data.token) {
         Alert.alert("Logged In");
-        navigation.navigate("Products");
+        setAuthInfo({ isAuth: true });
+      } else {
+        setAuthInfo({ isAuth: false });
+        Alert.alert("Login Failed", "incorrect username or password");
       }
     } catch (error) {
+      setAuthInfo({ isAuth: false });
       Alert.alert("Login Failed", "incorrect username or password");
     }
   };
