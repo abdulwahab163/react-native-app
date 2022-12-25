@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,12 +6,16 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  View,
 } from "react-native";
 
 import AppTextInput from "../components/AppTextInput";
 import Screen from "../components/Screen";
+import AuthContext from "../helpers/AuthContext";
 
 function Products({ navigation }) {
+  const { setAuthInfo } = useContext(AuthContext);
+
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState([]);
 
@@ -59,8 +63,17 @@ function Products({ navigation }) {
     }
   };
 
+  const handleLogout = () => {
+    setAuthInfo({ isAuth: false });
+  };
+
   return (
     <Screen style={styles.container}>
+      <View style={styles.logout}>
+        <TouchableOpacity onPress={() => handleLogout()}>
+          <Text>logout</Text>
+        </TouchableOpacity>
+      </View>
       <AppTextInput
         autoCapitalize={"none"}
         autoCorrect={false}
@@ -96,6 +109,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "contain",
+  },
+  logout: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
 
